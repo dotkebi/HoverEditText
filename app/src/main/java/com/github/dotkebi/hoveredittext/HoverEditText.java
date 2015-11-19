@@ -3,19 +3,25 @@ package com.github.dotkebi.hoveredittext;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.text.InputType;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * @author dotkebi on 2015. 11. 18..
@@ -27,6 +33,12 @@ public class HoverEditText extends RelativeLayout {
 
     private EditText editText;
     private LinearLayout hoverContainer;
+
+    private WindowManager windowManager;
+    private WindowManager.LayoutParams stickyParams;
+
+    private int actionBarHeight;
+    private int softKeyHeight;
 
     private boolean keyboards;
 
@@ -47,14 +59,14 @@ public class HoverEditText extends RelativeLayout {
                 , android.R.attr.layout_height
         };*/
 
-        int hoverHeight;
+        /*int hoverHeight;
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.HoverEditText);
         if (typedArray != null) {
-            //hoverHeight = typedArray.getDimensionPixelOffset(R.styleable.HoverEditText_hoverBoardHeight, );
-
+            hoverHeight = typedArray.getDimensionPixelOffset(R.styleable.HoverEditText_hoverBoardHeight, );
             typedArray.recycle();
-        }
+        }*/
         editText = createEditText(attrs);
+        editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         editText.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -74,27 +86,61 @@ public class HoverEditText extends RelativeLayout {
             }
         });
         this.addView(editText);
+        //((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        checkKeyboardHeight(this);
 
         hoverContainer = createHoverBoard();
         hoverContainer.setVisibility(GONE);
 
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        stickyParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+        stickyParams.gravity = Gravity.START | Gravity.BOTTOM;
+        stickyParams.y = 300;
+        //stickyParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 
-        hoverContainer.setLayoutParams(params);
-        this.addView(hoverContainer);
-        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        final TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(
+                new int[] { android.R.attr.actionBarSize });
+        actionBarHeight = (int) styledAttributes.getDimension(0, 0);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+
+        WindowManager windowManager = ((Activity) context).getWindowManager();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        int usableHeight = metrics.heightPixels;
+
+        windowManager.getDefaultDisplay().getRealMetrics(metrics);
+        int realHeight = metrics.heightPixels;
+        softKeyHeight = realHeight - usableHeight;
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (windowManager == null) {
+            windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            windowManager.addView(hoverContainer, stickyParams);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (windowManager != null) {
+            windowManager.removeView(hoverContainer);
+            windowManager = null;
+        }
+    }
 
     @Override
     public boolean dispatchKeyEventPreIme(@NonNull KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
                 && getKeyDispatcherState() != null) {
             Log.w(Tag, "back!");
-            if (event.getAction() == KeyEvent.ACTION_DOWN
-                    //|| event.getAction() == KeyEvent.ACTION_UP
-                    ) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 hideKeyboard();
                 return true;
             }
@@ -138,10 +184,36 @@ public class HoverEditText extends RelativeLayout {
 
     private LinearLayout createHoverBoard() {
         LinearLayout container = (LinearLayout) View.inflate(context, R.layout.hover_board, null);
-        //container.generateLayoutParams()
 
-
+        final TextView textView = (TextView) container.findViewById(R.id.btn);
+        textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editText.append(textView.getText().toString());
+            }
+        });
         return container;
+    }
+
+    private void checkKeyboardHeight(final View parentLayout) {
+        parentLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Rect r = new Rect();
+                        parentLayout.getWindowVisibleDisplayFrame(r);
+
+                        int screenHeight = parentLayout.getRootView().getHeight();
+                        int difference = screenHeight - (r.bottom - r.top);
+                        //if (difference > 100) {
+                            stickyParams.y = difference - actionBarHeight / 2 - softKeyHeight;
+                            //stickyParams.y = (screenHeight - actionBarHeight) / 2 - difference;
+                            windowManager.updateViewLayout(hoverContainer, stickyParams);
+                            //Log.w(Tag, "keyboard height " + stickyParams.y);
+                        //}
+                    }
+                });
+
     }
 
 }
