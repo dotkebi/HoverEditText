@@ -21,6 +21,7 @@ public class HoverEditText extends RelativeLayout {
     private static final String Tag = "HoverEditText";
 
     private Context context;
+    //private GestureDetector gestureDetector;
     private boolean keyboards;
 
     private EditText editText;
@@ -30,8 +31,11 @@ public class HoverEditText extends RelativeLayout {
         init(context, attrs);
     }
 
+
     private void init(Context context, AttributeSet attrs) {
         this.context = context;
+
+        //gestureDetector = new GestureDetector(this, new On)
 
         keyboards = false;
         /*int[] attrsArray = new int[] {
@@ -62,46 +66,53 @@ public class HoverEditText extends RelativeLayout {
         editText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
+                if (!hasFocus) {
+/*
                     showKeyboard();
                 } else {
+*/
                     hideKeyboard();
                 }
             }
         });
 
         this.addView(editText);
+
         /*this.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    Log.w(Tag, "back!");
+                if (keyCode == KeyEvent.KEYCODE_BACK
+                        && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    HoverEditText.this.dispatchKeyEvent(event);
+                    return true;
+                    *//*Log.w(Tag, "back!");
                     if (event.getAction() == KeyEvent.ACTION_DOWN) {
                         hideKeyboard();
                         return true;
                     } else if (event.getAction() == KeyEvent.ACTION_UP) {
                         hideKeyboard();
                         return true;
-                    }
+                    }*//*
                 }
                 return false;
             }
         });*/
     }
 
+
     @Override
-    public boolean dispatchKeyEvent(@NonNull KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+    public boolean dispatchKeyEventPreIme(@NonNull KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+                && getKeyDispatcherState() != null) {
             Log.w(Tag, "back!");
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                hideKeyboard();
-                return true;
-            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN
+                    //|| event.getAction() == KeyEvent.ACTION_UP
+                    ) {
                 hideKeyboard();
                 return true;
             }
         }
-        return super.dispatchKeyEvent(event);
+        return super.dispatchKeyEventPreIme(event);
     }
 
     private void showKeyboard() {
