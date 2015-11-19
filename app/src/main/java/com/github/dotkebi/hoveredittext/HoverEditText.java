@@ -1,5 +1,6 @@
 package com.github.dotkebi.hoveredittext;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,10 +24,11 @@ public class HoverEditText extends RelativeLayout {
     private static final String Tag = "HoverEditText";
 
     private Context context;
-    //private GestureDetector gestureDetector;
-    private boolean keyboards;
 
     private EditText editText;
+    private LinearLayout hoverContainer;
+
+    private boolean keyboards;
 
     public HoverEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,8 +38,6 @@ public class HoverEditText extends RelativeLayout {
 
     private void init(Context context, AttributeSet attrs) {
         this.context = context;
-
-        //gestureDetector = new GestureDetector(this, new On)
 
         keyboards = false;
         /*int[] attrsArray = new int[] {
@@ -67,36 +69,21 @@ public class HoverEditText extends RelativeLayout {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-/*
-                    showKeyboard();
-                } else {
-*/
                     hideKeyboard();
                 }
             }
         });
-
         this.addView(editText);
 
-        /*this.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK
-                        && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    HoverEditText.this.dispatchKeyEvent(event);
-                    return true;
-                    *//*Log.w(Tag, "back!");
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        hideKeyboard();
-                        return true;
-                    } else if (event.getAction() == KeyEvent.ACTION_UP) {
-                        hideKeyboard();
-                        return true;
-                    }*//*
-                }
-                return false;
-            }
-        });*/
+        hoverContainer = createHoverBoard();
+        hoverContainer.setVisibility(GONE);
+
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
+        hoverContainer.setLayoutParams(params);
+        this.addView(hoverContainer);
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
 
@@ -127,6 +114,7 @@ public class HoverEditText extends RelativeLayout {
             public void run() {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                toggleHoverBoard(true);
             }
         }, 200);
     }
@@ -134,9 +122,14 @@ public class HoverEditText extends RelativeLayout {
     private void hideKeyboard() {
         editText.clearFocus();
         Log.w(Tag, "hide keyboard");
+        toggleHoverBoard(false);
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
         keyboards = false;
+    }
+
+    private void toggleHoverBoard(boolean flag) {
+        hoverContainer.setVisibility((flag) ? VISIBLE : GONE);
     }
 
     private EditText createEditText(AttributeSet attrs) {
