@@ -257,6 +257,11 @@ public class HoverEditText extends RelativeLayout {
     /**********************************************************************************************
      * public methods
      **********************************************************************************************/
+
+    /**
+     * setView
+     * @param view view
+     */
     public void setView(View view) {
         hoverViewLayoutResId = 0;
         hoverContainer = view;
