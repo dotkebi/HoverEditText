@@ -1,6 +1,6 @@
 <resources>
     <declare-styleable name="HoverEditText">
         <attr name="hoverBoardHeight" format="dimension"/>
+        <attr name="hoverBoardLayout" format="reference"/>
     </declare-styleable>
-
 </resources>
