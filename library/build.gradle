@@ -1,4 +1,16 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    userOrg = 'dotkebi'
+    groupId = 'com.github.dotkebi'
+    artifactId = 'hoveredittext'
+    publishVersion = '0.1.0'
+    desc = 'HoverEditText'
+    website = 'https://github.com/dotkebi/HoverEditText'
+    issueTracker = "${website}/issues"
+    repository = "${website}.git"
+}
+
 
 android {
     compileSdkVersion 23
