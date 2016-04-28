@@ -1,4 +1,4 @@
-package com.github.dotkebi.hoveredittext;
+package com.github.dotkebi.hoveringboardedittext;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,7 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
- * @author dotkebi on 2015. 11. 18..
+ * @author dotkebi@gmail.com on 2015. 11. 18..
  */
 public class HoverEditText extends RelativeLayout {
     private static final String Tag = "HoverEditText";
