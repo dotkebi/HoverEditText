@@ -17,6 +17,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -32,6 +33,7 @@ public class HoverEditText extends RelativeLayout {
     private Context context;
 
     private int hoverViewLayoutResId;
+    private int hoverViewBackgroundResId;
 
     private EditText editText;
     private View hoverContainer;
@@ -76,6 +78,7 @@ public class HoverEditText extends RelativeLayout {
         try {
             hoverBoardHeight = (int) a.getDimension(R.styleable.HoverEditText_hoverBoardHeight, 0);
             hoverViewLayoutResId = a.getResourceId(R.styleable.HoverEditText_hoverBoardLayout, 0);
+            hoverViewBackgroundResId = a.getResourceId(R.styleable.HoverEditText_hoverBoardBackground, 0);
         } finally {
             a.recycle();
         }
@@ -89,6 +92,8 @@ public class HoverEditText extends RelativeLayout {
 
     private void init(AttributeSet attrs) {
         keyboards = false;
+
+        setBackgroundResource(hoverViewBackgroundResId);
 
         editText = createEditText(attrs);
         editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -112,7 +117,7 @@ public class HoverEditText extends RelativeLayout {
         });
         this.addView(editText);
         //((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        checkKeyboardHeight(this);
+        checkKeyboardHeight();
 
         hoverContainer = createHoverBoard();
         getHoverboardHeight();
@@ -238,7 +243,8 @@ public class HoverEditText extends RelativeLayout {
         });
     }
 
-    private void checkKeyboardHeight(final View parentLayout) {
+    private void checkKeyboardHeight() {
+        final ViewGroup parentLayout = this;
         parentLayout.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
