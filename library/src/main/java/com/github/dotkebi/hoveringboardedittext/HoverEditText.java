@@ -133,7 +133,6 @@ public class HoverEditText extends RelativeLayout {
         checkKeyboardHeight(this);
 
         hoverContainer = createHoverBoard();
-        getHoverboardHeight();
 
         stickyParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -160,7 +159,7 @@ public class HoverEditText extends RelativeLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (windowManager == null) {
+        if (windowManager == null && hoverContainer != null) {
             windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             windowManager.addView(hoverContainer, stickyParams);
         }
@@ -169,7 +168,7 @@ public class HoverEditText extends RelativeLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (windowManager != null) {
+        if (windowManager != null && hoverContainer != null) {
             windowManager.removeView(hoverContainer);
             windowManager = null;
         }
@@ -214,7 +213,9 @@ public class HoverEditText extends RelativeLayout {
     }
 
     private void toggleHoverBoard(boolean flag) {
-        hoverContainer.setVisibility((flag) ? VISIBLE : GONE);
+        if (hoverContainer != null) {
+            hoverContainer.setVisibility((flag) ? VISIBLE : GONE);
+        }
         if (rootViewChangeListener != null) {
             rootViewChangeListener.rootViewChangeListener(flag);
         }
@@ -230,11 +231,15 @@ public class HoverEditText extends RelativeLayout {
         }
         if (hoverContainer != null) {
             hoverContainer.setVisibility(GONE);
+            getHoverboardHeight();
         }
         return hoverContainer;
     }
 
     private void getHoverboardHeight() {
+        if (hoverContainer == null) {
+            return;
+        }
         ViewTreeObserver viewTreeObserver = hoverContainer.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -253,6 +258,9 @@ public class HoverEditText extends RelativeLayout {
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
+                        if (hoverContainer == null) {
+                            return;
+                        }
                         Rect r = new Rect();
                         view.getWindowVisibleDisplayFrame(r);
 

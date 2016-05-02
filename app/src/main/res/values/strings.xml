@@ -2,4 +2,7 @@
     <string name="app_name">HoverEditText</string>
     <string name="editText">editText</string>
     <string name="one">1</string>
+
+    <string name="appear">appear</string>
+    <string name="disappear">disappear</string>
 </resources>
