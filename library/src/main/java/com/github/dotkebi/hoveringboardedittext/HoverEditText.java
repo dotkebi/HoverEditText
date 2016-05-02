@@ -196,6 +196,7 @@ public class HoverEditText extends RelativeLayout {
         }, 200);
     }
 
+
     private void hideKeyboard() {
         editText.clearFocus();
         toggleHoverBoard(false);
@@ -206,6 +207,9 @@ public class HoverEditText extends RelativeLayout {
 
     private void toggleHoverBoard(boolean flag) {
         hoverContainer.setVisibility((flag) ? VISIBLE : GONE);
+        if (rootViewChangeListener != null) {
+            rootViewChangeListener.rootViewChangeListener(flag);
+        }
     }
 
     private EditText createEditText(AttributeSet attrs) {
@@ -248,10 +252,6 @@ public class HoverEditText extends RelativeLayout {
                         int difference = screenHeight - (r.bottom - r.top);
                         stickyParams.y = difference - hoverBoardHeight / 2 - softKeyHeight;
                         windowManager.updateViewLayout(hoverContainer, stickyParams);
-
-                        if (rootViewChangeListener != null) {
-                            rootViewChangeListener.rootViewChangeListener();
-                        }
                     }
                 });
     }
