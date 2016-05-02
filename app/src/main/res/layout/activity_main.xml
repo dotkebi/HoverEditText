@@ -13,13 +13,20 @@
     tools:context=".MainActivity">
 
     <com.github.dotkebi.hoveringboardedittext.HoverEditText
+        android:id="@+id/hover"
         app:hoverBoardLayout="@layout/hover_board"
-        android:hint="HoverEditText"
+        app:hoverBoardBackground="@drawable/background_stroked"
+
+        android:padding="3dp"
+        android:background="@android:color/transparent"
+        android:inputType="numberDecimal"
+        android:hint="@string/app_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <EditText
-        android:hint="HoverEditText2"
+        android:hint="@string/editText"
+        android:inputType="numberDecimal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

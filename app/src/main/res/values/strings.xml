@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HoverEditText</string>
+    <string name="editText">editText</string>
+    <string name="one">1</string>
 </resources>

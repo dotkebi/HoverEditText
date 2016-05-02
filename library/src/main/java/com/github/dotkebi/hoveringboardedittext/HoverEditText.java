@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.text.Editable;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -59,20 +60,27 @@ public class HoverEditText extends RelativeLayout {
     public HoverEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        init(attrs, 0, 0);
+        if (!isInEditMode()) {
+            init(attrs, 0, 0);
+        }
+
     }
 
     public HoverEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-        init(attrs, defStyleAttr);
+        if (!isInEditMode()) {
+            init(attrs, defStyleAttr);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public HoverEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.context = context;
-        init(attrs, defStyleAttr, defStyleRes);
+        if (!isInEditMode()) {
+            init(attrs, defStyleAttr, defStyleRes);
+        }
     }
 
     private void init(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -101,7 +109,7 @@ public class HoverEditText extends RelativeLayout {
         setBackgroundResource(hoverViewBackgroundResId);
 
         editText = createEditText(attrs);
-        editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        //editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         editText.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -270,20 +278,58 @@ public class HoverEditText extends RelativeLayout {
         //getHoverboardHeight();
     }
 
+    /**
+     * setView
+     * @param layoutResId layour resource id
+     */
     public void setView(int layoutResId) {
         hoverViewLayoutResId = layoutResId;
         hoverContainer = null;
         createHoverBoard();
     }
 
+    /**
+     * get inflated view of hoverBoard
+     * @return view of hoverBoard
+     */
     public View getView() {
         return hoverContainer;
     }
 
+    /**
+     * set root view for detecting showing keyboard
+     * @param view root view
+     */
     public void setRootView(View view) {
         if (view != null) {
             checkKeyboardHeight(view);
         }
+    }
+
+
+    /***********************************************************************************************
+     * bridge method to control inside editText
+     **********************************************************************************************/
+
+    /**
+     * setText for editText
+     */
+    public void setText(CharSequence charSequence) {
+        editText.setText(charSequence);
+    }
+
+    /**
+     * getText
+     */
+    public Editable getText() {
+        return editText.getText();
+    }
+
+    /**
+     * append
+     */
+    public void append(CharSequence charSequence) {
+        editText.append(charSequence);
     }
 
 }

@@ -8,7 +8,7 @@
 
     <Button
         android:id="@+id/btn"
-        android:text="1"
+        android:text="@string/one"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

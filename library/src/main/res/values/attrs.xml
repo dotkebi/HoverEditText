@@ -3,5 +3,6 @@
         <attr name="hoverBoardBackground" format="reference"/>
         <attr name="hoverBoardHeight" format="dimension"/>
         <attr name="hoverBoardLayout" format="reference"/>
+        <attr name="android:inputType" />
     </declare-styleable>
 </resources>
