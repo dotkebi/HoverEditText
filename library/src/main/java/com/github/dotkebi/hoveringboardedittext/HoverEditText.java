@@ -314,6 +314,9 @@ public class HoverEditText extends RelativeLayout {
         }
     }
 
+    public void disappearHoverWithKeyboard() {
+        hideKeyboard();
+    }
 
     /***********************************************************************************************
      * bridge method to control inside editText
