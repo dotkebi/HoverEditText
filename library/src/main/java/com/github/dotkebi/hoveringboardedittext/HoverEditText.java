@@ -117,7 +117,7 @@ public class HoverEditText extends RelativeLayout {
         });
         this.addView(editText);
         //((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        checkKeyboardHeight();
+        checkKeyboardHeight(this);
 
         hoverContainer = createHoverBoard();
         getHoverboardHeight();
@@ -207,19 +207,6 @@ public class HoverEditText extends RelativeLayout {
         return new EditText(context, attrs);
     }
 
-    /*private LinearLayout createHoverBoard() {
-        LinearLayout container = (LinearLayout) View.inflate(context, R.layout.hover_board, null);
-
-        final TextView textView = (TextView) container.findViewById(R.id.btn);
-        textView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editText.append(textView.getText().toString());
-            }
-        });
-        return container;
-    }*/
-
     private View createHoverBoard() {
         if (hoverContainer == null && hoverViewLayoutResId != 0) {
             hoverContainer = View.inflate(context, hoverViewLayoutResId, null);
@@ -243,16 +230,16 @@ public class HoverEditText extends RelativeLayout {
         });
     }
 
-    private void checkKeyboardHeight() {
-        final ViewGroup parentLayout = this;
-        parentLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+    private void checkKeyboardHeight(final View view) {
+        //final ViewGroup parentLayout = this;
+        view.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         Rect r = new Rect();
-                        parentLayout.getWindowVisibleDisplayFrame(r);
+                        view.getWindowVisibleDisplayFrame(r);
 
-                        int screenHeight = parentLayout.getRootView().getHeight();
+                        int screenHeight = view.getRootView().getHeight();
                         int difference = screenHeight - (r.bottom - r.top);
                         stickyParams.y = difference - hoverBoardHeight / 2 - softKeyHeight;
                         windowManager.updateViewLayout(hoverContainer, stickyParams);
@@ -278,6 +265,12 @@ public class HoverEditText extends RelativeLayout {
         hoverViewLayoutResId = layoutResId;
         hoverContainer = null;
         createHoverBoard();
+    }
+
+    public void setRootView(View view) {
+        if (view != null) {
+            checkKeyboardHeight(view);
+        }
     }
 
 }
