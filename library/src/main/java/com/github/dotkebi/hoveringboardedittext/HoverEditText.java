@@ -171,7 +171,7 @@ public class HoverEditText extends RelativeLayout {
     public boolean dispatchKeyEventPreIme(@NonNull KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
                 && getKeyDispatcherState() != null) {
-            Log.w(Tag, "back!");
+            //Log.w(Tag, "back!");
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 hideKeyboard();
                 return true;
