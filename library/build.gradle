@@ -5,8 +5,8 @@ publish {
     groupId = 'com.github.dotkebi'
     artifactId = 'hoveredittext'
     publishVersion = '0.2.0'
-    desc = 'HoverEditText'
-    website = 'https://github.com/dotkebi/HoverEditText'
+    desc = 'HoverViewContainer'
+    website = 'https://github.com/dotkebi/HoverViewContainer'
     issueTracker = "${website}/issues"
     repository = "${website}.git"
 }
