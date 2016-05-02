@@ -1,4 +1,4 @@
-# HoverEditText
+# HoverViewContainer
 
 When touch keyboard opened, pop up hovering board above it.
 
