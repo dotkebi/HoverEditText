@@ -276,7 +276,7 @@ public class HoverEditText extends RelativeLayout {
         createHoverBoard();
     }
 
-    public View getHoverContainer() {
+    public View getView() {
         return hoverContainer;
     }
 
