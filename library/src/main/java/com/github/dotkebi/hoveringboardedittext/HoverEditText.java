@@ -276,6 +276,10 @@ public class HoverEditText extends RelativeLayout {
         createHoverBoard();
     }
 
+    public View getHoverContainer() {
+        return hoverContainer;
+    }
+
     public void setRootView(View view) {
         if (view != null) {
             checkKeyboardHeight(view);
