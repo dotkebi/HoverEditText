@@ -3,9 +3,10 @@ package com.github.dotkebi.hoveredittext;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.dotkebi.hoveringboardedittext.HoverEditText;
+import com.github.dotkebi.hoveringboardedittext.HoverViewContainer;
 import com.github.dotkebi.hoveringboardedittext.RootViewChangeListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,10 +16,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final HoverEditText hoverEditText = (HoverEditText) findViewById(R.id.hover);
-        assert hoverEditText != null;
+        final HoverViewContainer hoverViewContainer = (HoverViewContainer) findViewById(R.id.hover);
+        final EditText editText = (EditText) findViewById(R.id.inside);
+        assert hoverViewContainer != null;
+        assert editText != null;
 
-        hoverEditText.setRootViewChangeListener(new RootViewChangeListener() {
+        hoverViewContainer.setRootViewChangeListener(new RootViewChangeListener() {
             @Override
             public void rootViewChangeListener(boolean visibility) {
                 Toast.makeText(MainActivity.this
@@ -27,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final View hoverBoard = hoverEditText.getView();
+        final View hoverBoard = hoverViewContainer.getView();
 
         if (hoverBoard != null) {
             hoverBoard.findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hoverEditText.append("1");
+                    editText.append("1");
                 }
             });
         }

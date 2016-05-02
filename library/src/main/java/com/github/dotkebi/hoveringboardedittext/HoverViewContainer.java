@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
-import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,25 +17,25 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 /**
  * @author dotkebi@gmail.com on 2015. 11. 18..
  */
-public class HoverEditText extends RelativeLayout {
+public class HoverViewContainer extends RelativeLayout implements View.OnFocusChangeListener {
     private static final String Tag = "HoverEditText";
 
     private Context context;
 
     private int hoverViewLayoutResId;
-    private int hoverViewBackgroundResId;
+    //private int hoverViewBackgroundResId;
 
-    private EditText editText;
+    //private EditText editText;
     private View hoverContainer;
 
     private WindowManager windowManager;
@@ -52,12 +51,12 @@ public class HoverEditText extends RelativeLayout {
         this.rootViewChangeListener = rootViewChangeListener;
     }
 
-    public HoverEditText(Context context) {
+    public HoverViewContainer(Context context) {
         super(context);
         this.context = context;
     }
 
-    public HoverEditText(Context context, AttributeSet attrs) {
+    public HoverViewContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         if (!isInEditMode()) {
@@ -66,7 +65,7 @@ public class HoverEditText extends RelativeLayout {
 
     }
 
-    public HoverEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HoverViewContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
         if (!isInEditMode()) {
@@ -75,7 +74,7 @@ public class HoverEditText extends RelativeLayout {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public HoverEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public HoverViewContainer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.context = context;
         if (!isInEditMode()) {
@@ -85,13 +84,13 @@ public class HoverEditText extends RelativeLayout {
 
     private void init(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs, R.styleable.HoverEditText, defStyleAttr, defStyleRes
+                attrs, R.styleable.HoverViewContainer, defStyleAttr, defStyleRes
         );
 
         try {
-            hoverBoardHeight = (int) a.getDimension(R.styleable.HoverEditText_hoverBoardHeight, 0);
-            hoverViewLayoutResId = a.getResourceId(R.styleable.HoverEditText_hoverBoardLayout, 0);
-            hoverViewBackgroundResId = a.getResourceId(R.styleable.HoverEditText_hoverBoardBackground, 0);
+            //hoverBoardHeight = (int) a.getDimension(R.styleable.HoverViewContainer_hoverBoardHeight, 0);
+            hoverViewLayoutResId = a.getResourceId(R.styleable.HoverViewContainer_hoverBoardLayout, 0);
+            //hoverViewBackgroundResId = a.getResourceId(R.styleable.HoverViewContainer_hoverBoardBackground, 0);
         } finally {
             a.recycle();
         }
@@ -106,29 +105,29 @@ public class HoverEditText extends RelativeLayout {
     private void init(AttributeSet attrs) {
         keyboards = false;
 
-        setBackgroundResource(hoverViewBackgroundResId);
+        //setBackgroundResource(hoverViewBackgroundResId);
 
-        editText = createEditText(attrs);
+        //editText = createEditText(attrs);
         //editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        editText.setOnTouchListener(new OnTouchListener() {
+       /* this.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (v == editText) {
+                //if (v == editText) {
                     showKeyboard();
                     return true;
-                }
-                return false;
+                //}
+                //return false;
             }
         });
-        editText.setOnFocusChangeListener(new OnFocusChangeListener() {
+        this.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     hideKeyboard();
                 }
             }
-        });
-        this.addView(editText);
+        });*/
+        //this.addView(editText);
         //((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         checkKeyboardHeight(this);
 
@@ -192,12 +191,12 @@ public class HoverEditText extends RelativeLayout {
             return;
         }
         keyboards = true;
-        editText.requestFocus();
+        //editText.requestFocus();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                imm.showSoftInput(HoverViewContainer.this, InputMethodManager.SHOW_FORCED);
                 toggleHoverBoard(true);
             }
         }, 200);
@@ -205,11 +204,11 @@ public class HoverEditText extends RelativeLayout {
 
 
     private void hideKeyboard() {
-        editText.clearFocus();
+        //this.clearFocus();
+        keyboards = false;
         toggleHoverBoard(false);
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-        keyboards = false;
+        imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
     }
 
     private void toggleHoverBoard(boolean flag) {
@@ -221,9 +220,17 @@ public class HoverEditText extends RelativeLayout {
         }
     }
 
-    private EditText createEditText(AttributeSet attrs) {
-        return new EditText(context, attrs);
-    }
+    /*private EditText createEditText(AttributeSet attrs) {
+        EditText editText = (EditText) View.inflate(context, R.layout.hover_edit_text_layout, null);
+        for (int i = 0; i < attrs.getAttributeCount(); i++) {
+            if (attrs.getAttributeName(i).equals("")) {
+
+
+            }
+        }
+        return editText;
+        //return new EditText(context);
+    }*/
 
     private View createHoverBoard() {
         if (hoverContainer == null && hoverViewLayoutResId != 0) {
@@ -318,29 +325,25 @@ public class HoverEditText extends RelativeLayout {
         hideKeyboard();
     }
 
-    /***********************************************************************************************
-     * bridge method to control inside editText
-     **********************************************************************************************/
 
-    /**
-     * setText for editText
-     */
-    public void setText(CharSequence charSequence) {
-        editText.setText(charSequence);
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        View view =this.getFocusedChild();
+        if (view != null) {
+            Log.w(Tag, view.toString());
+        }
+        if (ev.getAction() == MotionEvent.ACTION_DOWN && !keyboards) {
+            showKeyboard();
+        }
+        //Toast.makeText(context, "intercepter", Toast.LENGTH_SHORT).show();
+        return super.onInterceptTouchEvent(ev);
     }
 
-    /**
-     * getText
-     */
-    public Editable getText() {
-        return editText.getText();
-    }
-
-    /**
-     * append
-     */
-    public void append(CharSequence charSequence) {
-        editText.append(charSequence);
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (!hasFocus()) {
+            hideKeyboard();
+        }
     }
 
 }

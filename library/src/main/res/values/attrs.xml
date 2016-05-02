@@ -1,8 +1,8 @@
 <resources>
-    <declare-styleable name="HoverEditText">
-        <attr name="hoverBoardBackground" format="reference"/>
-        <attr name="hoverBoardHeight" format="dimension"/>
+    <declare-styleable name="HoverViewContainer">
+        <!--<attr name="hoverBoardBackground" format="reference"/>-->
+        <!--<attr name="hoverBoardHeight" format="dimension"/>-->
         <attr name="hoverBoardLayout" format="reference"/>
-        <attr name="android:inputType" />
+        <!--<attr name="android:inputType" />-->
     </declare-styleable>
 </resources>
