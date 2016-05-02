@@ -46,6 +46,11 @@ public class HoverEditText extends RelativeLayout {
 
     private boolean keyboards;
 
+    private RootViewChangeListener rootViewChangeListener;
+    public void setRootViewChangeListener(RootViewChangeListener rootViewChangeListener) {
+        this.rootViewChangeListener = rootViewChangeListener;
+    }
+
     public HoverEditText(Context context) {
         super(context);
         this.context = context;
@@ -243,6 +248,10 @@ public class HoverEditText extends RelativeLayout {
                         int difference = screenHeight - (r.bottom - r.top);
                         stickyParams.y = difference - hoverBoardHeight / 2 - softKeyHeight;
                         windowManager.updateViewLayout(hoverContainer, stickyParams);
+
+                        if (rootViewChangeListener != null) {
+                            rootViewChangeListener.rootViewChangeListener();
+                        }
                     }
                 });
     }
