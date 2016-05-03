@@ -179,7 +179,8 @@ public class HoverViewContainer extends RelativeLayout implements View.OnFocusCh
                 && getKeyDispatcherState() != null) {
             //Log.w(Tag, "back!");
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                hideKeyboard();
+                toggleHoverBoard(false);
+                //hideKeyboard();
                 return true;
             }
         }
