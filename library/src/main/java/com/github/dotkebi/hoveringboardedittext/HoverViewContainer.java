@@ -27,7 +27,7 @@ import android.widget.Toast;
 /**
  * @author dotkebi@gmail.com on 2015. 11. 18..
  */
-public class HoverViewContainer extends RelativeLayout implements View.OnFocusChangeListener {
+public class HoverViewContainer extends RelativeLayout {
     private static final String Tag = "HoverEditText";
 
     private Context context;
@@ -179,8 +179,8 @@ public class HoverViewContainer extends RelativeLayout implements View.OnFocusCh
                 && getKeyDispatcherState() != null) {
             //Log.w(Tag, "back!");
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                toggleHoverBoard(false);
-                //hideKeyboard();
+                //toggleHoverBoard(false);
+                hideKeyboard();
                 return true;
             }
         }
@@ -200,12 +200,15 @@ public class HoverViewContainer extends RelativeLayout implements View.OnFocusCh
                 imm.showSoftInput(HoverViewContainer.this, InputMethodManager.SHOW_FORCED);
                 toggleHoverBoard(true);
             }
-        }, 200);
+        }, 10);
     }
 
 
     private void hideKeyboard() {
         //this.clearFocus();
+        if (!keyboards) {
+            return;
+        }
         keyboards = false;
         toggleHoverBoard(false);
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -323,7 +326,8 @@ public class HoverViewContainer extends RelativeLayout implements View.OnFocusCh
     }
 
     public void disappearHoverWithKeyboard() {
-        toggleHoverBoard(false);
+        //toggleHoverBoard(false);
+        hideKeyboard();
     }
 
 
@@ -334,19 +338,11 @@ public class HoverViewContainer extends RelativeLayout implements View.OnFocusCh
             Log.w(Tag, view.toString());
         }
         if (ev.getAction() == MotionEvent.ACTION_DOWN && !keyboards) {
-            toggleHoverBoard(true);
-            //showKeyboard();
+            //toggleHoverBoard(true);
+            showKeyboard();
         }
         //Toast.makeText(context, "intercepter", Toast.LENGTH_SHORT).show();
         return super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if (!hasFocus()) {
-            toggleHoverBoard(false);
-            //hideKeyboard();
-        }
     }
 
 }
