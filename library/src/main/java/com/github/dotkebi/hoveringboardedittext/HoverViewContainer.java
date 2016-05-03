@@ -208,7 +208,7 @@ public class HoverViewContainer extends RelativeLayout implements View.OnFocusCh
         keyboards = false;
         toggleHoverBoard(false);
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(HoverViewContainer.this.getWindowToken(), 0);
     }
 
     private void toggleHoverBoard(boolean flag) {
@@ -322,18 +322,19 @@ public class HoverViewContainer extends RelativeLayout implements View.OnFocusCh
     }
 
     public void disappearHoverWithKeyboard() {
-        hideKeyboard();
+        toggleHoverBoard(false);
     }
 
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        View view =this.getFocusedChild();
+        View view = this.getFocusedChild();
         if (view != null) {
             Log.w(Tag, view.toString());
         }
         if (ev.getAction() == MotionEvent.ACTION_DOWN && !keyboards) {
-            showKeyboard();
+            toggleHoverBoard(true);
+            //showKeyboard();
         }
         //Toast.makeText(context, "intercepter", Toast.LENGTH_SHORT).show();
         return super.onInterceptTouchEvent(ev);
@@ -342,7 +343,8 @@ public class HoverViewContainer extends RelativeLayout implements View.OnFocusCh
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (!hasFocus()) {
-            hideKeyboard();
+            toggleHoverBoard(false);
+            //hideKeyboard();
         }
     }
 
