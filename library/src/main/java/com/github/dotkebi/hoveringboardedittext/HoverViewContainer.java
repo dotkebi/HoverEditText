@@ -9,10 +9,8 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.text.Editable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -20,9 +18,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 /**
  * @author dotkebi@gmail.com on 2015. 11. 18..
@@ -333,15 +329,16 @@ public class HoverViewContainer extends RelativeLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        View view = this.getFocusedChild();
-        if (view != null) {
-            Log.w(Tag, view.toString());
+        Rect r = new Rect();
+        this.getWindowVisibleDisplayFrame(r);
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            if (r.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+                if (!keyboards) {
+                    showKeyboard();
+                }
+            }
         }
-        if (ev.getAction() == MotionEvent.ACTION_DOWN && !keyboards) {
-            //toggleHoverBoard(true);
-            showKeyboard();
-        }
-        //Toast.makeText(context, "intercepter", Toast.LENGTH_SHORT).show();
         return super.onInterceptTouchEvent(ev);
     }
 
