@@ -36,7 +36,13 @@ public class MainActivity extends AppCompatActivity {
             hoverBoard.findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editText.append("1");
+                    editText.getText().clear();
+                }
+            });
+            hoverBoard.findViewById(R.id.btn2).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editText.setText("");
                 }
             });
         }

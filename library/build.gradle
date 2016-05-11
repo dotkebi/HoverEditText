@@ -4,7 +4,7 @@ publish {
     userOrg = 'dotkebi'
     groupId = 'com.github.dotkebi'
     artifactId = 'hoveredittext'
-    publishVersion = '0.2.4'
+    publishVersion = '0.2.5'
     desc = 'HoverViewContainer'
     website = 'https://github.com/dotkebi/HoverViewContainer'
     issueTracker = "${website}/issues"

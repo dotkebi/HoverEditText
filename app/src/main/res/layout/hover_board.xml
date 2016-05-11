@@ -8,7 +8,13 @@
 
     <Button
         android:id="@+id/btn"
-        android:text="@string/one"
+        android:text="@string/clear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/btn2"
+        android:text="@string/clear"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

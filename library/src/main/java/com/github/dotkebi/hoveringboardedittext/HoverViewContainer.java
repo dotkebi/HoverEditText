@@ -173,7 +173,6 @@ public class HoverViewContainer extends RelativeLayout {
     public boolean dispatchKeyEventPreIme(@NonNull KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
                 && getKeyDispatcherState() != null) {
-            //Log.w(Tag, "back!");
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 //toggleHoverBoard(false);
                 hideKeyboard();
@@ -181,6 +180,29 @@ public class HoverViewContainer extends RelativeLayout {
             }
         }
         return super.dispatchKeyEventPreIme(event);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Rect r = new Rect();
+        this.getWindowVisibleDisplayFrame(r);
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            if (r.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+                if (!keyboards) {
+                    showKeyboard();
+                }
+            }
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        if (!focused) {
+            hideKeyboard();
+        }
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
     }
 
     private void showKeyboard() {
@@ -216,7 +238,7 @@ public class HoverViewContainer extends RelativeLayout {
             hoverContainer.setVisibility((flag) ? VISIBLE : GONE);
         }
         if (rootViewChangeListener != null) {
-            rootViewChangeListener.rootViewChangeListener(flag);
+            rootViewChangeListener.rootViewChangeListener(flag && keyboards);
         }
     }
 
@@ -324,22 +346,6 @@ public class HoverViewContainer extends RelativeLayout {
     public void disappearHoverWithKeyboard() {
         //toggleHoverBoard(false);
         hideKeyboard();
-    }
-
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Rect r = new Rect();
-        this.getWindowVisibleDisplayFrame(r);
-
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (r.contains((int) ev.getRawX(), (int) ev.getRawY())) {
-                if (!keyboards) {
-                    showKeyboard();
-                }
-            }
-        }
-        return super.onInterceptTouchEvent(ev);
     }
 
 }
